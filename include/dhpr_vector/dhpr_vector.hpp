@@ -11,10 +11,11 @@ namespace dhpr
         using size_type = std::size_t;
 
         vector();
+        ~vector();
         vector(const vector& other);
         explicit vector(size_type count);
-        ~vector();
 
+        vector<T>& operator=(const vector& other);
         T& operator[](size_type index);
         const T& operator[](size_type index) const;
 
@@ -72,6 +73,37 @@ namespace dhpr
             data_[i].~T();
         }
         ::operator delete(data_);
+    }
+
+    template <typename T>
+    vector<T>& vector<T>::operator=(const vector& other)
+    {
+        if (this == &other)
+            return *this;
+        
+        for (size_type i = 0; i < size_; i++)
+        {
+            data_[i].~T();
+        }
+        ::operator delete(data_);
+            
+        data_ = nullptr;
+        capacity_ = 0;
+        size_ = 0;
+
+        if (other.size_ == 0)
+            return *this;
+
+        data_ = static_cast<T*>(::operator new(sizeof(T) * other.size_));
+        capacity_ = other.size_;
+        size_ = other.size_;
+
+        for (size_type i = 0; i < size_; i++)
+        {
+            new (data_ + i) T(other.data_[i]);
+        }
+
+        return *this;
     }
 
     template <typename T>

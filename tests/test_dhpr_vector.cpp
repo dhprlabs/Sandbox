@@ -15,4 +15,11 @@ int main()
 
     for (size_t i = 0; i < d.size(); ++i)
         std::cout << d[i] << " ";
+
+    dhpr::vector<int> f;
+    f.push_back(3);
+    f.push_back(5);
+
+    dhpr::vector<int> g;
+    g = f;
 }
