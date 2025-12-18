@@ -10,4 +10,9 @@ int main()
 
     for (size_t i = 0; i < v.size(); ++i)
         std::cout << v[i] << " ";
+
+    dhpr::vector<int> d(v);
+
+    for (size_t i = 0; i < d.size(); ++i)
+        std::cout << d[i] << " ";
 }

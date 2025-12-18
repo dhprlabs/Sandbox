@@ -11,6 +11,7 @@ namespace dhpr
         using size_type = std::size_t;
 
         vector();
+        vector(const vector& other);
         explicit vector(size_type count);
         ~vector();
 
@@ -30,7 +31,9 @@ namespace dhpr
         size_t capacity_;  // Total space allocated
     };
 
-    // Implementation
+    /*
+    Implementation
+    */
     template <typename T>
     vector<T>::vector() : data_(nullptr), size_(0), capacity_(0) {}
 
@@ -43,6 +46,21 @@ namespace dhpr
         for (size_type i = 0; i < count; i++)
         {
             new(data_ + i) T();
+        }
+    }
+
+    template <typename T>
+    vector<T>::vector(const vector& other) : data_(nullptr), size_(0), capacity_(0)
+    {
+        if (other.size_ == 0) return;
+
+        data_ = static_cast<T*>(::operator new(sizeof(T) * other.size_));
+        capacity_ = other.size_;
+        size_ = other.size_;
+
+        for (size_type i = 0; i < size_; i++)
+        {
+            new (data_ + i) T(other.data_[i]);
         }
     }
 
