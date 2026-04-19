@@ -1,2 +1,0 @@
-add_executable(test_dhpr_vector test_dhpr_vector.cpp)
-target_link_libraries(test_dhpr_vector dhpr_vector)

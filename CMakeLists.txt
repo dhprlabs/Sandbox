@@ -1,16 +1,25 @@
-cmake_minimum_required(VERSION 3.16)
-project(dhpr_vector VERSION 1.0 LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.28)
+project(Sandbox)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_library(dhpr_vector INTERFACE)
+set(IMGUI_DIR "${PROJECT_SOURCE_DIR}/external/imgui")
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
 
-target_include_directories(dhpr_vector
-    INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
 )
 
-enable_testing()
-add_subdirectory(tests)
+list(APPEND IMGUI_SOURCES
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
+add_subdirectory(src)
+message(STATUS "main program built successfully")
