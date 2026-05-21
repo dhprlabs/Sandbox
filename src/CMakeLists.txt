@@ -1,11 +1,3 @@
-find_package(OpenGL REQUIRED)
-find_package(glfw3 REQUIRED)
-
-# creating library for glew
-add_library(GLEW STATIC ${PROJECT_SOURCE_DIR}/external/GLEW/glew.c)
-target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external)
-target_link_libraries(GLEW PUBLIC OpenGL::GL)
-
 add_executable(hello_triangle hello_triangle.cc)
 add_executable(two_triangles two_triangles.cc)
 add_executable(two_different_buffers two_different_buffers.cc)
