@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 
 #include "GLEW/GL/glew.h"
+#include <iostream>
 
 /*
 #include "imgui.h"
@@ -126,6 +127,10 @@ int main(void)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0); 
     
+	int nrAttributes;
+	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
+	
 	/* Setup Dear ImGui context */
     // IMGUI_CHECKVERSION();
     // ImGui::CreateContext();
