@@ -70,3 +70,12 @@ target_link_libraries(transformations PRIVATE
     GLEW 
     OpenGL::GL
 )
+
+add_executable(coordinate_systems coordinate_systems.cc)
+target_link_libraries(coordinate_systems PRIVATE 
+    glm
+    shader
+    glfw 
+    GLEW 
+    OpenGL::GL
+)

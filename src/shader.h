@@ -2,6 +2,9 @@
 #define SHADER_H
 
 #include <GLEW/GL/glew.h>
+#include <GLM/glm/glm.hpp>
+#include <GLM/glm/gtc/matrix_transform.hpp>
+#include <GLM/glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -21,6 +24,8 @@ public:
     void setBool(const std::string &name, bool value) const;
     void setInt(const std::string &name, int value) const;
     void setFloat(const std::string &name, float value) const;
+    void setMat4(const std::string &name, glm::mat4 mat) const;
+
 };
 
 #endif
