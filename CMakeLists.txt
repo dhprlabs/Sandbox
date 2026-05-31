@@ -29,7 +29,7 @@ add_library(GLEW STATIC ${PROJECT_SOURCE_DIR}/external/GLEW/glew.c)
 target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external)
 target_link_libraries(GLEW PUBLIC OpenGL::GL)
 
-# building glfw
+# building glm library
 add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLM)
 
 # building src
