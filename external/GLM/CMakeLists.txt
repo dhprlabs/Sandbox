@@ -1,8 +1,4 @@
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-cmake_policy(VERSION 2.6)
-if (NOT CMAKE_VERSION VERSION_LESS "3.1")
-	cmake_policy(SET CMP0054 NEW)
-endif()
+cmake_minimum_required(VERSION 3.28)
 
 project(glm)
 set(GLM_VERSION "0.9.8")
