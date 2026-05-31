@@ -61,3 +61,12 @@ target_link_libraries(texture PRIVATE
     GLEW 
     OpenGL::GL
 )
+
+add_executable(transformations transformations.cc)
+target_link_libraries(transformations PRIVATE 
+    glm
+    shader
+    glfw 
+    GLEW 
+    OpenGL::GL
+)

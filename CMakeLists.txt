@@ -30,7 +30,7 @@ target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external)
 target_link_libraries(GLEW PUBLIC OpenGL::GL)
 
 # building glfw
-# add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLFW)
+add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLM)
 
 # building src
 add_subdirectory(src)
