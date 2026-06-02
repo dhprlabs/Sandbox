@@ -88,3 +88,12 @@ target_link_libraries(coordinate_systems_more PRIVATE
     GLEW 
     OpenGL::GL
 )
+
+add_executable(camera camera.cc)
+target_link_libraries(camera PRIVATE 
+    glm
+    shader
+    glfw 
+    GLEW 
+    OpenGL::GL
+)

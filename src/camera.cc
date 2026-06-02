@@ -197,10 +197,13 @@ int main(void)
     ourShader.setInt("texture1", 0);
     ourShader.setInt("texture2", 1);
 
+    glm::mat4 projection;
+    projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+    ourShader.setMat4("projection", projection);
 
     while (!glfwWindowShouldClose(window))
     {
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         ourShader.use();
@@ -209,23 +212,17 @@ int main(void)
         /* defining the coordinate systems */
         // glm::mat4 model = glm::mat4(1.0f);
         // model = glm::rotate(model, (float)glfwGetTime()*glm::radians(-55.0f), glm::vec3(0.5f, 0.5f, 0.5f)); 
-        glm::mat4 view = glm::mat4(1.0f);
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -4.5f));                       // translating backwards because opengl's rhs
+        // glm::mat4 view = glm::mat4(1.0f);
+        // view = glm::translate(view, glm::vec3(0.0f, 0.0f, -2.5f));                       // translating backwards because opengl's rhs
 		// view = glm::rotate(view, glm::radians(20.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-        glm::mat4 projection;
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-
-        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-        unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-        // unsigned int modelLoc = glGetUniformLocation(ourShader.ID, "model");
-        // unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
-        // unsigned int projectionLoc = glGetUniformLocation(ourShader.ID, "projection");
-        // glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-        // glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-        // glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        
+        /* defining camera matrix */
+        // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+        // glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+        // glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+        // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
+        // glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+        // glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
 
         glBindVertexArray(VAO);
         glActiveTexture(GL_TEXTURE0);
@@ -234,15 +231,21 @@ int main(void)
         glBindTexture(GL_TEXTURE_2D, texture2);
 		// glDrawArrays(GL_TRIANGLES, 0, 36);
         
+        glm::mat4 view = glm::mat4(1.0f);          // make sure to initialize matrix to identity matrix first
+        float radius = 10.0f;
+        float camX = static_cast<float>(sin(glfwGetTime()) * radius);
+        float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
+        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+        ourShader.setMat4("view", view);
+
         for(unsigned int i = 0; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            // float timeAngle = static_cast<float>(sin(glfwGetTime())) * 15.0f;
-			float timeAngle = (float)glfwGetTime() * 15.0f;
+            float timeAngle = static_cast<float>(sin(glfwGetTime())) * 15.0f;
 			float angle = 20.0f * i;
-			if (i % 2 == 0) model = glm::rotate(model, glm::radians(timeAngle), glm::vec3(0.3f, 0.6f, 0.5f)); 
-            else model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			model = glm::rotate(model, glm::radians(timeAngle), glm::vec3(0.3f, 0.6f, 0.5f)); 
             ourShader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
