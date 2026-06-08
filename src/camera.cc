@@ -14,7 +14,73 @@
 #include "shader.h"
 
 
+float deltaTime = 0.0f;	                                 // Time between current frame and last frame
+float lastFrame = 0.0f;                                  // Time of last frame
 float currentProportion = 0.5f;
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f,  3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f,  0.0f);
+
+bool firstMouse = true;
+float yaw = -90.0f;
+float pitch = 0.0f;
+float lastX = 800.0f / 2.0;
+float lastY = 600.0 / 2.0;
+float fov = 45.0f;
+
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+void processInput(GLFWwindow *window)
+{
+    const float cameraSpeed = 2.5f * deltaTime; 
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) cameraPos += cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) cameraPos -= cameraSpeed * cameraFront;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    fov -= (float)yoffset;
+    if (fov < 1.0f)
+        fov = 1.0f;
+    if (fov > 45.0f)
+        fov = 45.0f; 
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+  
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; 
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    yaw   += xoffset;
+    pitch += yoffset;
+
+    if(pitch > 89.0f)
+        pitch = 89.0f;
+    if(pitch < -89.0f)
+        pitch = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    direction.y = sin(glm::radians(pitch));
+    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    cameraFront = glm::normalize(direction);
+}  
 
 int main(void)
 {
@@ -43,6 +109,10 @@ int main(void)
 
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
+
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     if (glewInit() != GLEW_OK)
     {
@@ -52,15 +122,6 @@ int main(void)
 
     glEnable(GL_DEPTH_TEST);
     Shader ourShader("../src/vertex_shaders/vs_coordinate.vs", "../src/fragment_shaders/fs_coordinate.fs");
-
-    /* rectangle coordinates + texture co-ordinates */
-    // float vertices[] = {
-    //     // positions        // texture coords
-    //     0.5f,  0.5f, 0.0f,  1.0f, 1.0f,             // top right
-    //     0.5f, -0.5f, 0.0f,  1.0f, 0.0f,             // bottom right
-    //    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,             // bottom left
-    //    -0.5f,  0.5f, 0.0f,  0.0f, 1.0f              // top left 
-    // };
 
     float vertices[] = {
        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
@@ -203,6 +264,11 @@ int main(void)
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = static_cast<float>(glfwGetTime());
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame; 
+        processInput(window);
+
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
@@ -232,11 +298,16 @@ int main(void)
 		// glDrawArrays(GL_TRIANGLES, 0, 36);
         
         glm::mat4 view = glm::mat4(1.0f);          // make sure to initialize matrix to identity matrix first
-        float radius = 10.0f;
-        float camX = static_cast<float>(sin(glfwGetTime()) * radius);
-        float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
-        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-        unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+        // float radius = 10.0f;
+        // float camX = static_cast<float>(sin(glfwGetTime()) * radius);
+        // float camZ = static_cast<float>(cos(glfwGetTime()) * radius);
+        // view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        // unsigned int viewLoc = glGetUniformLocation(ourShader.ID, "view");
+        
+        glm::mat4 projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        ourShader.setMat4("projection", projection);        
+
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         ourShader.setMat4("view", view);
 
         for(unsigned int i = 0; i < 10; i++)
