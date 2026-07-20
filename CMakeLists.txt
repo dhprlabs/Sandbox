@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.2)
 project(Sandbox LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 11)
@@ -30,7 +30,7 @@ target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external)
 target_link_libraries(GLEW PUBLIC OpenGL::GL)
 
 # building glm library
-add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLM)
+# add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLM)
 
 # building src
 add_subdirectory(src)
