@@ -6,7 +6,7 @@ add_library(camera STATIC camera.cc)
 target_include_directories(camera PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(camera PUBLIC GLEW OpenGL::GL)
 
-add_executable(sandbox application.cc)
+add_executable(sandbox model_loading.cc)
 target_link_libraries(sandbox PRIVATE 
     shader
     camera
