@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GLEW/GL/glew.h>
-#include <GLM/glm/glm.hpp>
-#include <GLM/glm/gtc/matrix_transform.hpp>
-#include <GLM/glm/gtc/type_ptr.hpp>
+#include <glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 

@@ -1,36 +1,35 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.12) 
 project(Sandbox LANGUAGES C CXX)
 
 set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17) 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
-set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+# Output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 
-# packages
+# ---------------------------------------------------------------------------
+# External Packages (System Installed)
+# ---------------------------------------------------------------------------
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
+find_package(assimp REQUIRED) 
 
-# set(IMGUI_SOURCES
-#     ${IMGUI_DIR}/imgui.cpp
-#     ${IMGUI_DIR}/imgui_draw.cpp
-#     ${IMGUI_DIR}/imgui_tables.cpp
-#     ${IMGUI_DIR}/imgui_widgets.cpp
-#     ${IMGUI_DIR}/imgui_demo.cpp
-# )
+# ---------------------------------------------------------------------------
+# External Vendors / Subdirectories (In-Project Dependencies)
+# ---------------------------------------------------------------------------
 
-# list(APPEND IMGUI_SOURCES
-#     ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
-#     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
-# )
-
-# creating library for glew
 add_library(GLEW STATIC ${PROJECT_SOURCE_DIR}/external/GLEW/glew.c)
-target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external)
+target_include_directories(GLEW PUBLIC ${PROJECT_SOURCE_DIR}/external/GLEW/GL)
 target_link_libraries(GLEW PUBLIC OpenGL::GL)
 
-# building glm library
-# add_subdirectory(${PROJECT_SOURCE_DIR}/external/GLM)
+add_library(glm_headers INTERFACE)
+target_include_directories(glm_headers INTERFACE ${PROJECT_SOURCE_DIR}/external/GLM)
 
-# building src
+# ---------------------------------------------------------------------------
+# Source Directory
+# ---------------------------------------------------------------------------
 add_subdirectory(src)
